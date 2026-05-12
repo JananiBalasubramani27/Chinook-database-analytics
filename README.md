@@ -1,4 +1,5 @@
 🎧 Chinook SQL Data Analysis Project
+
 📊 Project Overview
 
 This project analyzes the Chinook music store database using SQL to explore customer behavior, sales performance, and music trends.

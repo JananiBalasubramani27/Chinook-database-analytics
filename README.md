@@ -1,60 +1,63 @@
-🎧 Chinook SQL Data Analysis Project
+# 🎧 Chinook SQL Data Analysis Project
 
-📊 Project Overview
-
+## 📌 Project Overview  
 This project analyzes the Chinook music store database using SQL to explore customer behavior, sales performance, and music trends.
 
-🧠 1. Customer Analysis
-Questions explored:
-Customers from specific countries (e.g., Brazil)
-Customers who never made purchases
-Customers who spent above average
-Top spending customers (2009, 2010)
-Key Insight:
+---
 
-👉 A small group of customers contributes most of the revenue, showing strong customer concentration.
+## 🧠 Customer Analysis  
+- Identified customers from specific countries (e.g., Brazil)  
+- Found customers who never made purchases  
+- Analyzed customers who spent above average  
+- Identified top spending customers (2009, 2010)
 
-💰 2. Sales Analysis
-Questions explored:
-Total sales per sales agent
-Best-performing sales agent (2009)
-Total sales per country
-Monthly sales trends (2009)
-Key Insight:
+**Insight:** A small group of customers contributes a large portion of total revenue, showing strong revenue concentration.
 
-👉 Sales performance varies significantly across agents and countries, indicating uneven revenue distribution.
+---
 
-🎵 3. Music Analysis
-Questions explored:
-Most sold artists
-Most popular genres
-Track-level sales performance
-Album and artist relationships
-Key Insight:
+## 💰 Sales Analysis  
+- Calculated total sales per sales agent  
+- Identified top-performing sales agent in 2009  
+- Analyzed total sales per country  
+- Studied monthly sales trends for 2009  
 
-👉 A few artists and genres dominate total sales, showing clear popularity clustering in music consumption.
+**Insight:** Sales performance varies significantly across agents and regions, indicating uneven revenue distribution.
 
-📈 4. Advanced SQL Analysis
-Techniques used:
-CTE (Common Table Expressions)
-Window Functions (RANK)
-Subqueries
-Aggregate functions
-String functions (email domain extraction)
-Multi-table joins
-Problems solved:
-Top customer using multiple methods (CTE, window function, subquery)
-Most used email domain
-Ranking sales by country
-Key Insight:
+---
 
-👉 Advanced SQL techniques simplify complex business problems and improve query readability.
+## 🎵 Music Analysis  
+- Identified most sold artists  
+- Analyzed most popular genres  
+- Studied track-level sales performance  
+- Explored relationships between tracks, albums, and artists  
 
-🚀 Project Outcome
+**Insight:** A few artists and genres dominate overall sales, showing clear popularity clustering in music consumption.
 
+---
+
+## 📈 Advanced SQL Analysis  
+**Techniques used:**
+- CTE (Common Table Expressions)  
+- Window Functions (RANK)  
+- Subqueries  
+- Aggregations (SUM, COUNT, AVG)  
+- String functions (email domain extraction)  
+- Multi-table JOINs  
+
+**Problems solved:**
+- Top customer using multiple methods (CTE, window function, subquery)  
+- Most used email domain analysis  
+- Country-wise sales ranking  
+
+**Insight:** Advanced SQL techniques help simplify complex business problems and improve query readability.
+
+---
+
+## 🚀 Project Outcome  
 This project demonstrates:
+- Strong SQL querying skills  
+- Ability to analyze real-world business data  
+- Data-driven storytelling using structured analysis  
+- Understanding of customer, sales, and music trends  
 
-Strong SQL querying skills
-Ability to solve real-world business problems
-Data storytelling through structured analysis
-Understanding of customer, sales, and product behavior
+---

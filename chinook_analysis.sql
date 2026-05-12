@@ -1,0 +1,264 @@
+--1.Find the Invoices of customers who are from Brazil. (The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.)
+  
+  SELECT C.FirstName, C.LastName, I.InvoiceId, I.InvoiceDate, I.BillingCountry
+  FROM customers C
+  LEFT JOIN invoices I
+  ON C.CustomerId = I.CustomerId
+  WHERE C.Country = 'Brazil'
+
+--2.Show the Employees who are Sales Agents
+
+  SELECT LastName, Firstname, Title
+  FROM employees
+  WHERE Title LIKE 'Sales%Agent'
+
+--3.Find a unique/distinct list of billing countries from the Invoice table
+
+  SELECT DISTINCT(BillingCountry)
+  FROM invoices
+
+--4.Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name
+
+  SELECT E.FirstName || '  ' || E.LastName AS SalesAgent, I.InvoiceId
+  FROM employees E
+  JOIN customers C
+    ON C.SupportRepId = E.EmployeeId
+  JOIN invoices I
+    ON C.CustomerId = I.CustomerId;
+ 
+--5.Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.
+ 
+  SELECT E.LastName||'  '|| E.FirstName AS SalesAgent,
+         C.LastName||'  '|| C.FirstName AS CustomerName,
+         C.country, 
+         I.Total AS TotalInvoice
+  FROM customers C
+  JOIN Invoices I
+  ON C.CustomerId= I.CustomerId
+  JOIN employees E
+  ON C.SupportRepId= E.EmployeeId
+
+--6.How many Invoices were there in 2009?
+
+  SELECT COUNT(*)
+  FROM invoices
+  WHERE strftime('%Y', InvoiceDate) = '2009'
+
+--7.Write a query that includes the purchased track name with each invoice line ID
+
+  SELECT I.InvoiceLineId, T.Name
+  FROM invoice_items I
+  JOIN tracks T
+  ON I.TrackId = T.TrackId;
+
+--8.Write a query that includes the purchased track name AND artist name with each invoice line ID
+
+  SELECT 
+      I.InvoiceLineId,
+      T.Name AS TrackName,
+      AR.Name AS ArtistName
+  FROM invoice_items I
+  LEFT JOIN tracks T
+      ON I.TrackId = T.TrackId
+  LEFT JOIN albums A
+      ON T.AlbumId = A.AlbumId
+  LEFT JOIN artists AR
+      ON AR.ArtistId = A.ArtistId;
+
+--9.Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre.
+
+  SELECT 
+      T.Name AS TrackName,
+      A.Title AS AlbumName,
+      M.Name AS MediaType,
+      G.Name AS Genre
+  FROM tracks T
+  JOIN albums A
+      ON T.AlbumId = A.AlbumId
+  JOIN media_types M 
+      ON T.MediaTypeId = M.MediaTypeId
+  JOIN genres G
+      ON T.GenreId = G.GenreId;
+
+--10.The total sales made by each sales agent
+
+  SELECT 
+      E.FirstName || ' ' || E.LastName AS SalesAgent,
+      ROUND(SUM(I.Total), 2) AS TotalSales
+  FROM employees E
+  JOIN customers C
+      ON E.EmployeeId = C.SupportRepId
+  JOIN invoices I
+      ON I.CustomerId = C.CustomerId
+  GROUP BY E.FirstName, E.LastName
+  ORDER BY TotalSales DESC;
+
+--11. Sales agents who made the most dollars in sales in 2009?
+
+  SELECT 
+      E.FirstName || ' ' || E.LastName AS SalesAgent,
+      ROUND(SUM(I.Total), 2) AS TotalSales
+  FROM employees E
+  JOIN customers C
+      ON E.EmployeeId = C.SupportRepId
+  JOIN invoices I
+      ON I.CustomerId = C.CustomerId
+  WHERE I.InvoiceDate LIKE '2009%'
+  GROUP BY E.FirstName, E.LastName
+  ORDER BY TotalSales DESC
+  LIMIT 1;
+
+--12.Customer who spent the most money in 2010?
+
+SELECT 
+    C.LastName || ' ' || C.FirstName AS CustomerName,
+    I.CustomerId,
+    SUM(I.Total) AS TotalSpent
+FROM Invoices I
+JOIN Customers C
+        ON C.CustomerId = I.CustomerId
+WHERE strftime('%Y', I.InvoiceDate) = '2010'
+GROUP BY C.CustomerId
+ORDER BY TotalSpent DESC
+LIMIT 1;
+
+--13.The total number of tracks sold per genre?
+
+SELECT 
+    G.Name AS GenreName,
+    COUNT(DISTINCT T.TrackId) AS TrackCount
+FROM Genres G
+JOIN Tracks T
+    ON G.GenreId = T.GenreId
+JOIN Invoice_Items IT
+    ON IT.TrackId = T.TrackId
+GROUP BY G.Name
+ORDER BY TrackCount DESC;
+
+--14.Show total sales per country and list the top 5 countries
+
+SELECT*
+FROM (
+    SELECT BillingCountry AS Country, 
+           ROUND(SUM(Total),2) AS TotalSale,
+           RANK() OVER (ORDER BY SUM(Total) DESC) AS Rank
+       FROM invoices
+       GROUP BY BillingCountry
+       )
+       
+WHERE Rank<= 5;
+
+--15.Total sales per month in 2009
+
+SELECT SUM(Total) AS TotalSales,strftime('%m', InvoiceDate) AS Month,
+FROM invoices 
+WHERE strftime('%Y', InvoiceDate)='2009'
+GROUP BY strftime('%m', InvoiceDate)
+ORDER BY strftime('%m', InvoiceDate)
+
+--16.Show InvoiceLineId, TrackName, AlbumName, ArtistName, and CustomerName
+
+SELECT 
+    I.InvoiceLineId,
+    T.Name AS TrackName,
+    A.Title AS AlbumName,
+    AR.Name AS ArtistName ,
+    C.LastName||' '||C.FirstName AS CustomerName 
+FROM invoice_items I
+    JOIN invoices II
+        ON II.InvoiceId= I.InvoiceId
+    JOIN tracks T
+        ON I.TrackId=T.TrackId                                                                                                                                                                                                                                                                                                                   
+    JOIN albums  A
+        ON A.AlbumId=T.AlbumId
+    JOIN artists AR
+        ON AR.ArtistId=A.ArtistId
+    JOIN customers C
+        ON C.CustomerId=II.CustomerId
+       
+--17.Customers who spent the most in 2009 using CTE, join,subquery and window function.
+
+WITH CustomerTotals AS (
+    SELECT 
+        C.CustomerId,
+        C.FirstName || ' ' || C.LastName AS CustomerName,
+        SUM(I.Total) AS TotalSpent
+    FROM invoices I
+    JOIN customers C
+        ON I.CustomerId = C.CustomerId
+    WHERE STRFTIME('%Y', I.InvoiceDate) = '2009'
+    GROUP BY I.CustomerId
+)
+SELECT CustomerId, CustomerName, ROUND(TotalSpent, 2) AS TotalSpent
+FROM (
+    SELECT *,
+           RANK() OVER (ORDER BY TotalSpent DESC) AS RankNum
+    FROM CustomerTotals
+) 
+WHERE RankNum = 1;
+
+--18.List of all customers who spent more than the average spending.
+
+SELECT 
+    C.FirstName || ' ' || C.LastName AS customerName,
+    C.CustomerId,
+    SUM(I.Total) AS Totalpercustomer
+FROM customers C
+JOIN invoices I
+    ON C.CustomerId = I.CustomerId
+GROUP BY C.CustomerId
+HAVING SUM(I.Total) > (
+    SELECT AVG(TotalPerCustomer)
+    FROM (
+        SELECT SUM(Total) AS TotalPerCustomer
+        FROM invoices
+        GROUP BY CustomerId
+    )
+);
+
+--19.The artist whose tracks were sold the most.
+
+SELECT 
+    A.Name AS ArtistName,
+    SUM(II.Quantity) AS TotalSold
+FROM artists A
+JOIN albums AL
+    ON AL.ArtistId = A.ArtistId
+JOIN tracks T
+    ON T.AlbumId = AL.AlbumId
+JOIN invoice_items II
+    ON II.TrackId = T.TrackId
+GROUP BY A.ArtistId
+HAVING SUM(II.Quantity) = (
+    SELECT MAX(TotalSold)
+    FROM (
+        SELECT SUM(II.Quantity) AS TotalSold
+        FROM artists A
+        JOIN albums AL
+            ON AL.ArtistId = A.ArtistId
+        JOIN tracks T
+            ON T.AlbumId = AL.AlbumId
+        JOIN invoice_items II
+            ON II.TrackId = T.TrackId
+        GROUP BY A.ArtistId
+    )
+);
+
+--20.List of customers who never bought anything using Subquery selects all customers who have invoices
+
+SELECT C.CustomerId
+FROM customers C
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM invoices I
+    WHERE I.CustomerId = C.CustomerId
+);
+
+--21.The most used email domain
+
+SELECT SUBSTR(Email, INSTR( Email,'@')+1) AS Domain,
+       COUNT(*) AS Total_user
+FROM Customers
+GROUP BY SUBSTR(Email, INSTR( Email,'@')+1)
+ORDER BY Total_user DESC
+LIMIT 1;
